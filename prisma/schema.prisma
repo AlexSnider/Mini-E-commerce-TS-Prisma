@@ -10,7 +10,7 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model User {
+model Users {
   id String @id @default(uuid()) @db.VarChar(36)
   username String @unique
   email String @unique
@@ -18,6 +18,34 @@ model User {
   resetPasswordToken String?
   createdAt DateTime @default(now()) @db.Timestamp()
   updatedAt DateTime @default(now()) @db.Timestamp()
+  tokens            UsersAccessTokens[]
+  refreshTokens     UsersRefreshTokens[]
 
   @@map("users")
+}
+
+model UsersAccessTokens {
+  id String @id @default(uuid()) @db.VarChar(36)
+  user Users @relation(fields: [user_id], references: [id])
+  user_id String
+  access_token String @unique
+  createdAt DateTime @default(now()) @db.Timestamp()
+  expiration_date DateTime
+  revoked Boolean @default(false)
+  updatedAt DateTime @default(now()) @db.Timestamp()
+
+  @@map("users_access_tokens")
+}
+
+model UsersRefreshTokens {
+  id String @id @default(uuid()) @db.VarChar(36)
+  user Users @relation(fields: [user_id], references: [id])
+  user_id String
+  refresh_token String @unique
+  createdAt DateTime @default(now()) @db.Timestamp()
+  expiration_date DateTime
+  revoked Boolean @default(false)
+  updatedAt DateTime @default(now()) @db.Timestamp()
+
+  @@map("users_refresh_tokens")
 }
