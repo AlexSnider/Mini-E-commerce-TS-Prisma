@@ -1,0 +1,6 @@
+
+[2024-03-04 13:36:22 | Tracer ID:4f76e285d74edaf66f5945eefa886485 | Span ID:ee87b651e32cd2fe] [WARN] - User alexx | From * | Tryed to register with existing user or email | At /v1/register | On * | Reason *
+[2024-03-04 13:36:27 | Tracer ID:d80b30cb78ac5275b1395c23acfde6ca | Span ID:278635c49a062681] [INFO] - User alexx | From * | Successfully registered | At /v1/register | On * | Reason *
+[2024-03-04 13:36:42 | Tracer ID:9d3546040ca8c4477b3453d59babf1d8 | Span ID:2d3bbe22b2294bf9] [WARN] - User alexx | From * | Tryed to register with existing user or email | At /v1/register | On * | Reason *
+[2024-03-04 13:37:03 | Tracer ID:3099d65ee19c69c9460a332eabbe6018 | Span ID:2a3a86d335eb7930] [INFO] - User alexx | From * | Tryed to login and created tokens successfully | At /v1/login | On * | Reason *
+[2024-03-04 13:37:03 | Tracer ID:3099d65ee19c69c9460a332eabbe6018 | Span ID:2a3a86d335eb7930] [INFO] - User alexx | From * | Logged in successfully | At /v1/login | On * | Reason *
