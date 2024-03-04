@@ -2,8 +2,8 @@ import { Request, Response, NextFunction } from "express";
 import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
-const JWT_ACCESS_TOKEN_SECRET = process.env.JWT_ACCESS_TOKEN_SECRET;
-const JWT_REFRESH_TOKEN_SECRET = process.env.JWT_REFRESH_TOKEN_SECRET;
+import dotenv from "dotenv";
+dotenv.config();
 
 import { sign, verify } from "jsonwebtoken";
 
@@ -18,7 +18,7 @@ const createAccessToken = (user: User, expiresIn: number) => {
       id: user.id,
       username: user.username,
     },
-    JWT_ACCESS_TOKEN_SECRET,
+    process.env.JWT_ACCESS_TOKEN_SECRET,
     {
       expiresIn: expiresIn,
     }
@@ -33,7 +33,7 @@ const createRefreshToken = (user: User, expiresIn: number) => {
       id: user.id,
       username: user.username,
     },
-    JWT_REFRESH_TOKEN_SECRET,
+    process.env.JWT_REFRESH_TOKEN_SECRET,
     {
       expiresIn: expiresIn,
     }
@@ -43,7 +43,7 @@ const createRefreshToken = (user: User, expiresIn: number) => {
 };
 
 const checkTokenTimeLeft = (token: string) => {
-  const decoded = verify(token, JWT_ACCESS_TOKEN_SECRET);
+  const decoded = verify(token, process.env.JWT_ACCESS_TOKEN_SECRET);
   const { exp } = decoded as { exp: number };
   const currentTime = Math.floor(Date.now() / 1000);
   const thresholdSeconds = 300;
@@ -64,7 +64,7 @@ const renewAccessToken = async (req: Request, res: Response, next: NextFunction)
       return res.status(401).json({ error: true, message: "Unauthorized!" });
     }
 
-    const decoded = verify(refreshToken, JWT_REFRESH_TOKEN_SECRET);
+    const decoded = verify(refreshToken, process.env.JWT_REFRESH_TOKEN_SECRET);
 
     if (!decoded) {
       return res.status(401).json({ error: true, message: "Invalid refresh token!" });
@@ -96,7 +96,7 @@ const renewAccessToken = async (req: Request, res: Response, next: NextFunction)
       {
         username: (decoded as { username: string }).username,
       },
-      JWT_ACCESS_TOKEN_SECRET
+      process.env.JWT_ACCESS_TOKEN_SECRET
     );
 
     const newAccessTokenAge = 24 * 60 * 60 * 1000;
@@ -151,7 +151,7 @@ const verifyToken = (req: Request, res: Response, next: NextFunction) => {
   }
 
   try {
-    const validAccessToken = verify(accessToken, JWT_ACCESS_TOKEN_SECRET);
+    const validAccessToken = verify(accessToken, process.env.JWT_ACCESS_TOKEN_SECRET);
 
     if (!validAccessToken) {
       return res.status(401).json({ error: true, message: "Invalid access token!" });
