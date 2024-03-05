@@ -42,7 +42,7 @@ const createRefreshToken = (user: User, expiresIn: number) => {
   return refreshToken;
 };
 
-const checkTokenTimeLeft = (token: string) => {
+const checkTokenHasTimeLeft = (token: string) => {
   const decoded = verify(token, process.env.JWT_ACCESS_TOKEN_SECRET);
   const { exp } = decoded as { exp: number };
   const currentTime = Math.floor(Date.now() / 1000);
@@ -157,7 +157,7 @@ const verifyToken = (req: Request, res: Response, next: NextFunction) => {
       return res.status(401).json({ error: true, message: "Invalid access token!" });
     }
 
-    if (checkTokenTimeLeft(accessToken)) {
+    if (checkTokenHasTimeLeft(accessToken)) {
       return renewAccessToken(req, res, next);
     }
 
