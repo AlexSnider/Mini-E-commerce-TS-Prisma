@@ -6,7 +6,7 @@ import { getNodeAutoInstrumentations } from "@opentelemetry/auto-instrumentation
 import { WinstonInstrumentation } from "@opentelemetry/instrumentation-winston";
 
 const sdk = new opentelemetry.NodeSDK({
-  serviceName: "XPTO",
+  serviceName: "Mini E-Commerce - Traces",
   traceExporter: new OTLPTraceExporter({
     url: "http://localhost:4318/v1/traces",
     headers: {},
