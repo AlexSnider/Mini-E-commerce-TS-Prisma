@@ -188,7 +188,7 @@ export const loginUser = async (userData: User, Request: Request, Response: Resp
         message: logData.log(),
         ...logData.toWinstonLog(),
       });
-      return Response.status(404).json({ error: true, message: "User not found!" });
+      return Response.status(404).json({ error: true, message: "User or Password are invalid!" });
     }
 
     const passwordMatch = await argon2.verify(existingUser.password, password);
