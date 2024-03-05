@@ -1,7 +1,7 @@
 # Mini-E-commerce-TS-Prisma
-Versão 2.0 do projeto "Mini E-Commerce" - Atualizado para as tecnologias TS/Prisma
+Versão 2.0 do projeto "Mini E-Commerce" - Atualizado para as tecnologias TypeScript e Prisma.
 
-Readme em desenvolvimento...
+No momento, o projeto encontra-se em `CONSTANTE DESENVOLVIMENTO`.
 
 ![node-js-736399_1920](https://github.com/AlexSnider/Projeto-API-e-commerce-Node.js/assets/103783575/18da5724-9985-4320-ae21-800a2ebfb092)
 
