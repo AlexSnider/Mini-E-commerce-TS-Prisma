@@ -1,6 +1,6 @@
 import { describe, it } from "node:test";
 import { expect } from "@jest/globals";
-import { createUser } from "../../controllers/UserController";
+import {  } from "../../controllers/UserController";
 
 describe("User Registration", () => {
   it("should create a new user", async () => {
