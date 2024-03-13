@@ -10,7 +10,7 @@ import argon2 from "argon2";
 import logger from "../../utils/log/logger";
 import LoggerPattern from "../../utils/log/loggerPattern";
 
-interface User {
+export interface User {
   username: string;
   password: string;
   email: string;
