@@ -3,7 +3,7 @@ import { registerUser, loginUser } from "../controllers/UserController";
 import { findUser } from "../controllers/AdminController";
 import { findCategories } from "../controllers/ManagerController";
 import { verifyToken } from "../../auth/jwt";
-import keycloak from "../../keycloak_config/keycloak.config";
+import keycloak from "../keycloak_config/keycloak.config";
 import session from "express-session";
 import dotenv from "dotenv";
 dotenv.config();
