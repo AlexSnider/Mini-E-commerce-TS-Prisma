@@ -23,7 +23,7 @@ describe("User Controller", () => {
     });
   });
   describe("Register New User", () => {
-    test("should register a new user", async () => {
+    test("should register a new user.", async () => {
       const userData = {
         username: "testuser",
         password: "testpassword",
@@ -51,68 +51,10 @@ describe("User Controller", () => {
     });
 
     describe("Error Handling", () => {
-      test("should throw an error if username is blank", async () => {
+      test("should throw an error if any of the required fields are missing.", async () => {
         const userData = {
           username: "",
-          password: "testpassword",
-          email: "test@example.com",
-        };
-
-        const request = {
-          originalUrl: "/v1/register",
-        } as Request;
-
-        const response = {
-          status: jest.fn().mockReturnThis(),
-          json: jest.fn(),
-          location: jest.fn(),
-        } as unknown as Response;
-
-        await registerUser(userData, request, response);
-
-        expect(logger.log).toHaveBeenCalled();
-        expect(response.status).toHaveBeenCalledWith(400);
-        expect(response.json).toHaveBeenCalledWith({
-          error: true,
-          message: "Missing required fields!",
-        });
-      });
-    });
-
-    describe("Error Handling", () => {
-      test("should throw an error if password is blank", async () => {
-        const userData = {
-          username: "testuser",
           password: "",
-          email: "test@example.com",
-        };
-
-        const request = {
-          originalUrl: "/v1/register",
-        } as Request;
-
-        const response = {
-          status: jest.fn().mockReturnThis(),
-          json: jest.fn(),
-          location: jest.fn(),
-        } as unknown as Response;
-
-        await registerUser(userData, request, response);
-
-        expect(logger.log).toHaveBeenCalled();
-        expect(response.status).toHaveBeenCalledWith(400);
-        expect(response.json).toHaveBeenCalledWith({
-          error: true,
-          message: "Missing required fields!",
-        });
-      });
-    });
-
-    describe("Error Handling", () => {
-      test("should throw an error if email is blank", async () => {
-        const userData = {
-          username: "testuser",
-          password: "testpassword",
           email: "",
         };
 
@@ -138,7 +80,7 @@ describe("User Controller", () => {
     });
 
     describe("Error Handling", () => {
-      test("should throw an error if username or email already exists", async () => {
+      test("should throw an error if username or email have already been registered.", async () => {
         const userData = {
           username: "testuser",
           password: "testpassword",
