@@ -1,0 +1,8 @@
+{
+  "realm": "Your Realm Name",
+  "auth-server-url": "http://localhost:8080/",
+  "ssl-required": "external",
+  "resource": "Your Resource Name",
+  "public-client": true,
+  "confidential-port": 0
+}

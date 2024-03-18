@@ -10,7 +10,7 @@ import argon2 from "argon2";
 import logger from "../../utils/log/logger";
 import LoggerPattern from "../../utils/log/loggerPattern";
 
-interface User {
+export interface User {
   username: string;
   password: string;
   email: string;
@@ -110,7 +110,6 @@ export const registerUser = async (userData: User, Request: Request, Response: R
     } else if (error instanceof NotFoundException) {
       return Response.status(404).json({ error: true, message: error.message });
     } else {
-      console.log(error);
       const logData = new LoggerPattern({
         what: "Critical error crashed the server - Check logs",
         where: Request.originalUrl,
@@ -121,6 +120,7 @@ export const registerUser = async (userData: User, Request: Request, Response: R
         message: logData.log(),
         ...logData.toWinstonLog(),
       });
+      console.log(error);
       return Response.status(500).json({ error: true, message: "Internal server error!" });
     }
   }
