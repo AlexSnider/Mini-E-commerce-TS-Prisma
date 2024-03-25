@@ -49,3 +49,14 @@ model UsersRefreshTokens {
 
   @@map("users_refresh_tokens")
 }
+
+model Categories {
+  id                   String   @id @default(uuid()) @db.VarChar(36)
+  category_name        String   @unique
+  category_description String   @db.VarChar(255)
+  category_discount    Decimal? @default(0) @db.Decimal(5, 2)
+  createdAt            DateTime @default(now()) @db.Timestamp()
+  updatedAt            DateTime @default(now()) @db.Timestamp()
+
+  @@map("categories")
+}

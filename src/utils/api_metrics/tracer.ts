@@ -22,7 +22,7 @@ const sdk = new opentelemetry.NodeSDK({
 
 try {
   sdk.start();
-  console.log("Tracer started successfully!");
+  console.log("Tracer started successfully.");
 } catch (error) {
-  console.log(error);
+  console.log("Tracer failed to start:", error);
 }
