@@ -40,9 +40,13 @@ router.get("/v1/health-check", routeRateLimit, (req, res) => {
 });
 
 // ADMIN ROUTES
-router.get("/v1/admin/users", keycloak.protect(), async (Request: Request, Response: Response) => {
-  await findUser(Request, Response);
-});
+router.get(
+  "/v1/admin/users",
+  keycloak.protect("adminstration2"),
+  async (Request: Request, Response: Response) => {
+    await findUser(Request, Response);
+  }
+);
 
 router.get(
   "/v1/admin/system-metrics",
