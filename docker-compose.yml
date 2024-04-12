@@ -46,3 +46,14 @@ services:
       - 9411:9411
       - 4317:4317
       - 4318:4318
+
+  ecommerce-database:
+    container_name: ecommerce-database
+    image: mysql:latest
+    environment:
+      - MYSQL_DATABASE=ecommerce
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PWD_ECOMMERCE}
+      - MYSQL_USER=admin
+      - MYSQL_PASSWORD=${MYSQL_ROOT_PWD_ECOMMERCE}
+    ports:
+      - "3308:3306"

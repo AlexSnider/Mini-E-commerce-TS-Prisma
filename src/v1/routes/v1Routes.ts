@@ -40,13 +40,17 @@ router.get("/v1/health-check", routeRateLimit, (req, res) => {
 });
 
 // ADMIN ROUTES
-router.get("/v1/admin/users", keycloak.protect(), async (Request: Request, Response: Response) => {
-  await findUser(Request, Response);
-});
+router.get(
+  "/v1/admin/users",
+  keycloak.protect("realm:administration"),
+  async (Request: Request, Response: Response) => {
+    await findUser(Request, Response);
+  }
+);
 
 router.get(
   "/v1/admin/system-metrics",
-  keycloak.protect(),
+  keycloak.protect("realm:administration"),
   async (Request: Request, Response: Response) => {
     Response.redirect(process.env.SYSTEM_METRICS);
   }
@@ -55,7 +59,7 @@ router.get(
 //MANAGER ROUTES
 router.get(
   "/v1/manager/categories",
-  keycloak.protect(),
+  keycloak.protect("realm:manager"),
   async (Request: Request, Response: Response) => {
     await findCategories(Request, Response);
   }
