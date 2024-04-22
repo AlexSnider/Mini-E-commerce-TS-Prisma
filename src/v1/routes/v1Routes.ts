@@ -6,7 +6,7 @@ import { createUserSchema, loginUserSchema } from "../../schema/user.schema";
 import { validateResource } from "../../middleware/validateResource";
 import { routeRateLimit } from "../../middleware/routeRateLimit";
 import { serverRateLimit } from "../../middleware/serverRateLimit";
-import { registerUser, loginUser } from "../controllers/UserController";
+import { registerUser, loginUser, logoutUser, findUserById } from "../controllers/UserController";
 import { findUser } from "../controllers/UserController";
 import { findCategories } from "../controllers/CategoryController";
 import dotenv from "dotenv";
@@ -108,6 +108,7 @@ router.post(
   }
 );
 
+// USER LOGIN
 // USER LOGIN DOCS
 /**
  * @openapi
@@ -151,6 +152,19 @@ router.post(
     await loginUser(userData, Request, Response);
   }
 );
+
+// USER LOGOUT
+// USER LOGOUT DOCS
+
+router.post("/v1/logout", async (Request: Request, Response: Response) => {
+  await logoutUser(Request, Response);
+});
+
+// USER FIND BY ID
+// USER FIND BY ID DOCS
+router.get("/v1/admin/users/:id", routeRateLimit, async (Request: Request, Response: Response) => {
+  await findUserById(Request, Response);
+});
 
 // VERIFY TOKEN TEST ROUTE
 router.get("/v1/verify", verifyToken, async (Request: Request, Response: Response) => {
