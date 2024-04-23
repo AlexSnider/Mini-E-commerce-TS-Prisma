@@ -1,6 +1,6 @@
+import KeycloakConnect, { KeycloakConfig } from "keycloak-connect";
 import { Router } from "express";
 import session from "express-session";
-import KeycloakConnect, { KeycloakConfig } from "keycloak-connect";
 import dotenv from "dotenv";
 dotenv.config();
 
@@ -25,7 +25,7 @@ const keycloakConfig: KeycloakConfig = {
 const keycloak = new KeycloakConnect(
   {
     store: {
-      barerOnly: false,
+      bearerOnly: false,
       memoryStore: new session.MemoryStore(),
     },
   },

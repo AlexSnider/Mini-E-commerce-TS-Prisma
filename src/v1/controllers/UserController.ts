@@ -9,8 +9,10 @@ import { createAccessToken, createRefreshToken } from "../../auth/jwt";
 import argon2 from "argon2";
 import logger from "../../utils/log/logger";
 import LoggerPattern from "../../utils/log/loggerPattern";
+import { verify } from "jsonwebtoken";
 
 export interface User {
+  id: string;
   username: string;
   password: string;
   email: string;
@@ -305,6 +307,114 @@ export const loginUser = async (userData: User, Request: Request, Response: Resp
   }
 };
 
+export const logoutUser = async (Request: Request, Response: Response) => {
+  try {
+    const endpoint = Request.originalUrl;
+
+    const access_token = Request.cookies["accessToken"];
+
+    const refresh_token = Request.cookies["refreshToken"];
+
+    if (!access_token || !refresh_token) {
+      return Response.status(400).json({ error: true, message: "No tokens found!" });
+    }
+
+    const validAccessToken = verify(access_token, process.env.JWT_ACCESS_TOKEN_SECRET);
+    const validRefreshToken = verify(refresh_token, process.env.JWT_REFRESH_TOKEN_SECRET);
+
+    if (!validRefreshToken || !validAccessToken) {
+      return Response.status(401).json({
+        error: true,
+        message: "Invalid refresh token or access token!",
+      });
+    }
+
+    const checkIfAccessTokenIsRevoked = await prisma.usersAccessTokens.findFirst({
+      where: {
+        user_id: (validAccessToken as { id: string }).id,
+        access_token: access_token,
+      },
+
+      select: {
+        revoked: true,
+      },
+    });
+
+    const checkIfRefreshTokenIsRevoked = await prisma.usersRefreshTokens.findFirst({
+      where: {
+        user_id: (validRefreshToken as { id: string }).id,
+        refresh_token: refresh_token,
+      },
+      select: {
+        revoked: true,
+      },
+    });
+
+    if (
+      checkIfAccessTokenIsRevoked?.revoked === true ||
+      checkIfRefreshTokenIsRevoked?.revoked === true
+    ) {
+      Response.clearCookie("accessToken");
+      Response.clearCookie("refreshToken");
+    } else if (
+      checkIfAccessTokenIsRevoked?.revoked === false ||
+      checkIfRefreshTokenIsRevoked?.revoked === false
+    ) {
+      await prisma.usersAccessTokens.update({
+        where: {
+          user_id: (validAccessToken as { id: string }).id,
+          access_token: access_token,
+        },
+        data: {
+          revoked: true,
+        },
+      });
+
+      await prisma.usersRefreshTokens.update({
+        where: {
+          user_id: (validRefreshToken as { id: string }).id,
+          refresh_token: refresh_token,
+        },
+        data: {
+          revoked: true,
+        },
+      });
+
+      Response.clearCookie("accessToken");
+      Response.clearCookie("refreshToken");
+    }
+
+    const logData = new LoggerPattern({
+      what: "Logged out successfully",
+      where: endpoint,
+    });
+
+    logger.log({
+      level: "info",
+      message: logData.log(),
+      ...logData.toWinstonLog(),
+    });
+
+    Response.status(200).json({
+      error: false,
+      message: "If logged out sucessfully you'll be redirected to the login page!",
+    });
+  } catch (error) {
+    Response.status(500).json({ error: true, message: "Internal server error!" });
+
+    const logData = new LoggerPattern({
+      what: "Critical error crashed the route/server",
+      where: Request.originalUrl,
+    });
+
+    logger.log({
+      level: "error",
+      message: logData.log(),
+      ...logData.toWinstonLog(),
+    });
+  }
+};
+
 export const findUser = async (Request: Request, Response: Response) => {
   try {
     const endpoint = Request.originalUrl;
@@ -347,6 +457,72 @@ export const findUser = async (Request: Request, Response: Response) => {
       ...logData.toWinstonLog(),
     });
     console.log(error);
+    return Response.status(500).json({ error: true, message: "Oops! Something went wrong!" });
+  }
+};
+
+export const findUserById = async (Request: Request, Response: Response) => {
+  try {
+    const endpoint = Request.originalUrl;
+
+    const { id } = Request.params;
+
+    const user = await prisma.users.findUnique({
+      where: {
+        id: String(id),
+      },
+
+      select: {
+        id: true,
+        username: true,
+        email: true,
+        createdAt: true,
+      },
+    });
+
+    if (!user) {
+      const logData = new LoggerPattern({
+        what: "An attempt to find an user have been requested!",
+        where: endpoint,
+      });
+
+      logger.log({
+        level: "warn",
+        message: logData.log(),
+        ...logData.toWinstonLog(),
+      });
+
+      return Response.status(404).json({
+        error: true,
+        message: "The user may not be available.",
+      });
+    }
+
+    const logData = new LoggerPattern({
+      who: user.username,
+      what: "Was retrieved successfully!",
+      where: endpoint,
+    });
+
+    logger.log({
+      level: "info",
+      message: logData.log(),
+      ...logData.toWinstonLog(),
+    });
+
+    return Response.status(200).json(user);
+  } catch (error) {
+    const logData = new LoggerPattern({
+      what: "An attempt to find an user origined a fatal error!",
+      where: Request.originalUrl,
+    });
+
+    logger.log({
+      level: "error",
+      message: logData.log(),
+      ...logData.toWinstonLog(),
+    });
+
     return Response.status(500).json({ error: true, message: "Oops! Something went wrong!" });
   }
 };

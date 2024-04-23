@@ -20,7 +20,7 @@ const config: Config = {
   transform: {
     "^.+\\.ts$": "ts-jest",
   },
-  moduleFileExtensions: ["ts", "js", "json", "node"],
+  moduleFileExtensions: ["ts", "js", "json", "node"], 
 
   // Indicates whether the coverage information should be collected while executing the test
   // collectCoverage: false,
