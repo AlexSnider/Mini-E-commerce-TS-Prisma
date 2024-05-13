@@ -10,15 +10,10 @@ import argon2 from "argon2";
 import logger from "../../utils/log/logger";
 import LoggerPattern from "../../utils/log/loggerPattern";
 import { verify } from "jsonwebtoken";
+import { UserLoginInput } from "../../utils/interfaces/userLogin";
+import { UserRegisterInput } from "../../utils/interfaces/userRegister";
 
-export interface User {
-  id: string;
-  username: string;
-  password: string;
-  email: string;
-}
-
-export const registerUser = async (userData: User, Request: Request, Response: Response) => {
+export const registerUser = async (userData: UserRegisterInput, Request: Request, Response: Response) => {
   try {
     const { username, password, email } = userData;
 
@@ -128,7 +123,7 @@ export const registerUser = async (userData: User, Request: Request, Response: R
   }
 };
 
-export const loginUser = async (userData: User, Request: Request, Response: Response) => {
+export const loginUser = async (userData: UserLoginInput, Request: Request, Response: Response) => {
   try {
     const { username, password } = userData;
 
@@ -207,7 +202,7 @@ export const loginUser = async (userData: User, Request: Request, Response: Resp
         message: logData.log(),
         ...logData.toWinstonLog(),
       });
-      return Response.status(400).json({ error: true, message: "Invalid credentials!" });
+      return Response.status(400).json({ error: true, message: "User or Password are invalid!" });
     }
 
     const accessTokenDuration = 60 * 60 * 1000;
