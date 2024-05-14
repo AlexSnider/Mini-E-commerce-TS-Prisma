@@ -142,6 +142,14 @@ const renewAccessToken = async (
       },
     });
 
+    await prisma.usersAccessTokens.create({
+      data: {
+        user_id: (decoded as { id: string }).id,
+        access_token: newAccessToken,
+        expiration_date: new Date(Date.now() + newAccessTokenAge),
+      },
+    });
+
     return next();
   } catch (error) {
     console.log(error);
