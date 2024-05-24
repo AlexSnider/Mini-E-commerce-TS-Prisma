@@ -91,5 +91,41 @@ export const loginUserSchema = object({
   }),
 });
 
+// USER LOGOUT DOCS
+/**
+ * @openapi
+ * components:
+ *  schemas:
+ *    LogoutUserInput:
+ *      type: object
+ *      required:
+ *        - access_token
+ *        - refresh_token
+ *      properties:
+ *        access_token:
+ *          type: string
+ *          default: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c
+ *        refresh_token:
+ *          type: string
+ *          default: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c
+ *      logoutUserResponse:
+ *        type: object
+ *        properties:
+ *          message:
+ *            type: string
+ *            default: "User logged out successfully!"
+ *            description: "Logout message"
+ */
+export const logoutUserSchema = object({
+  body: object({
+    access_token: string({
+      required_error: "Access token is required",
+    }),
+    refresh_token: string({
+      required_error: "Refresh token is required",
+    }),
+  }),
+});
+
 export type CreateUserInput = TypeOf<typeof createUserSchema>["body"];
 export type LoginUserInput = TypeOf<typeof loginUserSchema>["body"];

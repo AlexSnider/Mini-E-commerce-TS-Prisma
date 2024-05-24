@@ -17,7 +17,7 @@ describe("User Controller", () => {
     await prisma.users.deleteMany({
       where: {
         email: {
-          contains: "jest_test@example.com",
+          contains: "run-jest-test@example.com",
         },
       },
     });
@@ -25,9 +25,9 @@ describe("User Controller", () => {
   describe("Register New User", () => {
     test("should register a new user.", async () => {
       const userData = {
-        username: "testuser",
-        password: "testpassword",
-        email: "jest_test@example.com",
+        username: "run-jest-test",
+        password: "runjesttestpwd",
+        email: "run-jest-test@example.com",
       };
 
       const request = {
@@ -82,9 +82,9 @@ describe("User Controller", () => {
     describe("Error Handling", () => {
       test("should throw an error if username or email have already been registered.", async () => {
         const userData = {
-          username: "testuser",
-          password: "testpassword",
-          email: "jest_test@example.com",
+          username: "run-jest-test",
+          password: "runjesttestpwd",
+          email: "run-jest-test@example.com",
         };
 
         const request = {
@@ -111,9 +111,9 @@ describe("User Controller", () => {
     describe("Critical Error", () => {
       test("should throw an error if there is an unexpected error.", async () => {
         const userData = {
-          username: "testuser",
-          password: "testpassword",
-          email: "jest_test@example.com",
+          username: "run-jest-test",
+          password: "runjesttestpwd",
+          email: "run-jest-test@example.com",
         };
 
         const request = {

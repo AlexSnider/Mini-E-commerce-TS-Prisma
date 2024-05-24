@@ -6,7 +6,12 @@ import { createUserSchema, loginUserSchema } from "../../schema/user.schema";
 import { validateResource } from "../../middleware/validateResource";
 import { routeRateLimit } from "../../middleware/routeRateLimit";
 import { serverRateLimit } from "../../middleware/serverRateLimit";
-import { registerUser, loginUser, logoutUser, findUserById } from "../controllers/UserController";
+import {
+  registerUser,
+  loginUser,
+  logoutUser,
+  findUserById,
+} from "../controllers/UserController";
 import { findUser } from "../controllers/UserController";
 import { findCategories } from "../controllers/CategoryController";
 import dotenv from "dotenv";
@@ -138,6 +143,8 @@ router.post(
  *                        example: {
  *                          "error": true,
  *                          "message": "Missing required fields!"}
+ *      401:
+ *         description: Invalid credentials!
  *      404:
  *         description: User not found!
  *      500:
@@ -155,21 +162,72 @@ router.post(
 
 // USER LOGOUT
 // USER LOGOUT DOCS
-
+/**
+ * @openapi
+ * '/v1/logout':
+ *  post:
+ *     tags:
+ *     - User
+ *     summary: Logout a user and revoke it's cookies
+ *     requestBody:
+ *      required: true
+ *      content:
+ *        application/json:
+ *           schema:
+ *              $ref: '#/components/schemas/LogoutUserInput'
+ *     responses:
+ *      200:
+ *         description: If logged out sucessfully you'll be redirected to the login page!
+ *      400:
+ *         description: No tokens found!
+ *      401:
+ *         description: Invalid refresh token or access token!
+ *      500:
+ *         description: Internal server error!
+ */
 router.post("/v1/logout", async (Request: Request, Response: Response) => {
   await logoutUser(Request, Response);
 });
 
 // USER FIND BY ID
 // USER FIND BY ID DOCS
-router.get("/v1/admin/users/:id", routeRateLimit, async (Request: Request, Response: Response) => {
-  await findUserById(Request, Response);
-});
+/**
+ * @openapi
+ * '/v1/admin/users/{id}':
+ *  get:
+ *     tags:
+ *     - User
+ *     summary: Find a user by ID
+ *     parameters:
+ *      - in: path
+ *        name: id
+ *        schema:
+ *          type: string
+ *        required: true
+ *        description: User ID
+ *     responses:
+ *      200:
+ *         description: User found!
+ *      404:
+ *         description: User not found!
+ */
+
+router.get(
+  "/v1/admin/users/:id",
+  routeRateLimit,
+  async (Request: Request, Response: Response) => {
+    await findUserById(Request, Response);
+  }
+);
 
 // VERIFY TOKEN TEST ROUTE
-router.get("/v1/verify", verifyToken, async (Request: Request, Response: Response) => {
-  Response.clearCookie("refreshToken");
-  Response.status(200).json({ message: "Token verified!" });
-});
+router.get(
+  "/v1/verify",
+  verifyToken,
+  async (Request: Request, Response: Response) => {
+    Response.clearCookie("refreshToken");
+    Response.status(200).json({ message: "Token verified or refreshed!" });
+  }
+);
 
 export default router;
