@@ -143,6 +143,8 @@ router.post(
  *                        example: {
  *                          "error": true,
  *                          "message": "Missing required fields!"}
+ *      401:
+ *         description: Invalid credentials!
  *      404:
  *         description: User not found!
  *      500:
@@ -224,7 +226,7 @@ router.get(
   verifyToken,
   async (Request: Request, Response: Response) => {
     Response.clearCookie("refreshToken");
-    Response.status(200).json({ message: "Token verified!" });
+    Response.status(200).json({ message: "Token verified or refreshed!" });
   }
 );
 
