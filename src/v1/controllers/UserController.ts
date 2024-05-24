@@ -13,7 +13,11 @@ import { verify } from "jsonwebtoken";
 import { UserLoginInput } from "../../utils/interfaces/userLogin";
 import { UserRegisterInput } from "../../utils/interfaces/userRegister";
 
-export const registerUser = async (userData: UserRegisterInput, Request: Request, Response: Response) => {
+export const registerUser = async (
+  userData: UserRegisterInput,
+  Request: Request,
+  Response: Response
+) => {
   try {
     const { username, password, email } = userData;
 
@@ -31,7 +35,10 @@ export const registerUser = async (userData: UserRegisterInput, Request: Request
         message: logData.log(),
         ...logData.toWinstonLog(),
       });
-      return Response.status(400).json({ error: true, message: "Missing required fields!" });
+      return Response.status(400).json({
+        error: true,
+        message: "Missing required fields!",
+      });
     }
 
     const existingUser = await prisma.users.findFirst({
@@ -64,7 +71,10 @@ export const registerUser = async (userData: UserRegisterInput, Request: Request
         message: logData.log(),
         ...logData.toWinstonLog(),
       });
-      return Response.status(400).json({ error: true, message: "User or Email already exists!" });
+      return Response.status(400).json({
+        error: true,
+        message: "User or Email already exists!",
+      });
     }
 
     try {
@@ -97,9 +107,15 @@ export const registerUser = async (userData: UserRegisterInput, Request: Request
         ...logData.toWinstonLog(),
       });
 
-      return Response.status(201).json({ error: false, message: "User created successfully!" });
+      return Response.status(201).json({
+        error: false,
+        message: "User created successfully!",
+      });
     } catch (error) {
-      return Response.status(400).json({ error: true, message: "Error while hashing password!" });
+      return Response.status(400).json({
+        error: true,
+        message: "Error while hashing password!",
+      });
     }
   } catch (error) {
     if (error instanceof CustomValidationException) {
@@ -118,12 +134,19 @@ export const registerUser = async (userData: UserRegisterInput, Request: Request
         ...logData.toWinstonLog(),
       });
       console.log(error);
-      return Response.status(500).json({ error: true, message: "Internal server error!" });
+      return Response.status(500).json({
+        error: true,
+        message: "Internal server error!",
+      });
     }
   }
 };
 
-export const loginUser = async (userData: UserLoginInput, Request: Request, Response: Response) => {
+export const loginUser = async (
+  userData: UserLoginInput,
+  Request: Request,
+  Response: Response
+) => {
   try {
     const { username, password } = userData;
 
@@ -141,12 +164,15 @@ export const loginUser = async (userData: UserLoginInput, Request: Request, Resp
         message: logData.log(),
         ...logData.toWinstonLog(),
       });
-      return Response.status(400).json({ error: true, message: "Missing required fields!" });
+      return Response.status(400).json({
+        error: true,
+        message: "Missing required fields!",
+      });
     }
 
-    const existingToken = Request.cookies["accessToken"];
+    const primaryToken = Request.cookies["accessToken"];
 
-    if (existingToken) {
+    if (primaryToken) {
       const logData = new LoggerPattern({
         who: username,
         what: "Tryed to login while already logged in",
@@ -158,7 +184,10 @@ export const loginUser = async (userData: UserLoginInput, Request: Request, Resp
         message: logData.log(),
         ...logData.toWinstonLog(),
       });
-      return Response.status(400).json({ error: true, message: "User already logged in!" });
+      return Response.status(400).json({
+        error: true,
+        message: "User already logged in!",
+      });
     }
 
     const existingUser = await prisma.users.findUnique({
@@ -185,7 +214,10 @@ export const loginUser = async (userData: UserLoginInput, Request: Request, Resp
         message: logData.log(),
         ...logData.toWinstonLog(),
       });
-      return Response.status(404).json({ error: true, message: "User or Password are invalid!" });
+      return Response.status(404).json({
+        error: true,
+        message: "User or Password are invalid!",
+      });
     }
 
     const passwordMatch = await argon2.verify(existingUser.password, password);
@@ -202,7 +234,10 @@ export const loginUser = async (userData: UserLoginInput, Request: Request, Resp
         message: logData.log(),
         ...logData.toWinstonLog(),
       });
-      return Response.status(400).json({ error: true, message: "User or Password are invalid!" });
+      return Response.status(401).json({
+        error: true,
+        message: "User or Password are invalid!",
+      });
     }
 
     const accessTokenDuration = 60 * 60 * 1000;
@@ -223,7 +258,10 @@ export const loginUser = async (userData: UserLoginInput, Request: Request, Resp
         message: logData.log(),
         ...logData.toWinstonLog(),
       });
-      return Response.status(500).json({ error: true, message: "Error while creating tokens!" });
+      return Response.status(500).json({
+        error: true,
+        message: "Error while creating tokens!",
+      });
     }
 
     await prisma.usersAccessTokens.create({
@@ -279,7 +317,10 @@ export const loginUser = async (userData: UserLoginInput, Request: Request, Resp
       message: logData.log(),
       ...logData.toWinstonLog(),
     });
-    return Response.status(200).json({ error: false, message: "User logged in successfully!" });
+    return Response.status(200).json({
+      error: false,
+      message: "User logged in successfully!",
+    });
   } catch (error) {
     if (error instanceof CustomValidationException) {
       return Response.status(400).json({ error: true, message: error.message });
@@ -297,7 +338,10 @@ export const loginUser = async (userData: UserLoginInput, Request: Request, Resp
         message: logData.log(),
         ...logData.toWinstonLog(),
       });
-      return Response.status(500).json({ error: true, message: "Internal server error!" });
+      return Response.status(500).json({
+        error: true,
+        message: "Internal server error!",
+      });
     }
   }
 };
@@ -311,11 +355,20 @@ export const logoutUser = async (Request: Request, Response: Response) => {
     const refresh_token = Request.cookies["refreshToken"];
 
     if (!access_token || !refresh_token) {
-      return Response.status(400).json({ error: true, message: "No tokens found!" });
+      return Response.status(400).json({
+        error: true,
+        message: "No tokens found!",
+      });
     }
 
-    const validAccessToken = verify(access_token, process.env.JWT_ACCESS_TOKEN_SECRET);
-    const validRefreshToken = verify(refresh_token, process.env.JWT_REFRESH_TOKEN_SECRET);
+    const validAccessToken = verify(
+      access_token,
+      process.env.JWT_ACCESS_TOKEN_SECRET
+    );
+    const validRefreshToken = verify(
+      refresh_token,
+      process.env.JWT_REFRESH_TOKEN_SECRET
+    );
 
     if (!validRefreshToken || !validAccessToken) {
       return Response.status(401).json({
@@ -324,26 +377,28 @@ export const logoutUser = async (Request: Request, Response: Response) => {
       });
     }
 
-    const checkIfAccessTokenIsRevoked = await prisma.usersAccessTokens.findFirst({
-      where: {
-        user_id: (validAccessToken as { id: string }).id,
-        access_token: access_token,
-      },
+    const checkIfAccessTokenIsRevoked =
+      await prisma.usersAccessTokens.findFirst({
+        where: {
+          user_id: (validAccessToken as { id: string }).id,
+          access_token: access_token,
+        },
 
-      select: {
-        revoked: true,
-      },
-    });
+        select: {
+          revoked: true,
+        },
+      });
 
-    const checkIfRefreshTokenIsRevoked = await prisma.usersRefreshTokens.findFirst({
-      where: {
-        user_id: (validRefreshToken as { id: string }).id,
-        refresh_token: refresh_token,
-      },
-      select: {
-        revoked: true,
-      },
-    });
+    const checkIfRefreshTokenIsRevoked =
+      await prisma.usersRefreshTokens.findFirst({
+        where: {
+          user_id: (validRefreshToken as { id: string }).id,
+          refresh_token: refresh_token,
+        },
+        select: {
+          revoked: true,
+        },
+      });
 
     if (
       checkIfAccessTokenIsRevoked?.revoked === true ||
@@ -392,10 +447,14 @@ export const logoutUser = async (Request: Request, Response: Response) => {
 
     Response.status(200).json({
       error: false,
-      message: "If logged out sucessfully you'll be redirected to the login page!",
+      message:
+        "If logged out sucessfully you'll be redirected to the login page!",
     });
   } catch (error) {
-    Response.status(500).json({ error: true, message: "Internal server error!" });
+    Response.status(500).json({
+      error: true,
+      message: "Internal server error!",
+    });
 
     const logData = new LoggerPattern({
       what: "Critical error crashed the route/server",
@@ -436,7 +495,10 @@ export const findUser = async (Request: Request, Response: Response) => {
         ...logData.toWinstonLog(),
       });
 
-      return Response.status(404).json({ error: true, message: "No users found!" });
+      return Response.status(404).json({
+        error: true,
+        message: "No users found!",
+      });
     }
 
     return Response.status(200).json(users);
@@ -452,7 +514,10 @@ export const findUser = async (Request: Request, Response: Response) => {
       ...logData.toWinstonLog(),
     });
     console.log(error);
-    return Response.status(500).json({ error: true, message: "Oops! Something went wrong!" });
+    return Response.status(500).json({
+      error: true,
+      message: "Oops! Something went wrong!",
+    });
   }
 };
 
@@ -518,6 +583,9 @@ export const findUserById = async (Request: Request, Response: Response) => {
       ...logData.toWinstonLog(),
     });
 
-    return Response.status(500).json({ error: true, message: "Oops! Something went wrong!" });
+    return Response.status(500).json({
+      error: true,
+      message: "Oops! Something went wrong!",
+    });
   }
 };
