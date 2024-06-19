@@ -2,7 +2,7 @@ version: "3.8"
 
 services:
   db-kc:
-    container_name: db_mysql2
+    container_name: db-kc-mysql
     image: mysql:latest
     environment:
       - MYSQL_DATABASE=keycloak
@@ -13,8 +13,8 @@ services:
       - "3307:3306"
 
   keycloak:
-    container_name: keycloak2
-    image: quay.io/keycloak/keycloak:19.0.1
+    container_name: keycloak
+    image: quay.io/keycloak/keycloak:latest
     environment:
       - KEYCLOAK_ADMIN=${KEYCLOAK_ADMIN}
       - KEYCLOAK_ADMIN_PASSWORD=${KEYCLOAK_ADMIN_PASSWORD}
@@ -31,6 +31,7 @@ services:
       - db-kc
 
   jaeger-collector:
+    container_name: jaeger-collector
     image: jaegertracing/all-in-one:latest
     environment:
       - COLLECTOR_ZIPKIN_HTTP_PORT=:9411
@@ -48,7 +49,7 @@ services:
       - 4318:4318
 
   ecommerce-database:
-    container_name: ecommerceDB
+    container_name: ecommerce-db
     image: mysql:latest
     environment:
       - MYSQL_DATABASE=ecommerce
@@ -57,3 +58,5 @@ services:
       - MYSQL_PASSWORD=${MYSQL_ROOT_PWD_ECOMMERCE}
     ports:
       - "3309:3306"
+    volumes:
+      - ./data.sql:/docker-entrypoint-initdb.d/data.sql
