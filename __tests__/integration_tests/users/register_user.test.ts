@@ -1,8 +1,8 @@
 import { describe, test, expect, afterAll } from "@jest/globals";
 import { Request, Response } from "express";
-import { prisma } from "../../../database";
-import { registerUser } from "../../controllers/UserController";
-import logger from "../../../utils/log/logger";
+import { prisma } from "../../../src/database";
+import { registerUser } from "../../../src/v1/controllers/UserController";
+import logger from "../../../src/utils/log/logger";
 
 jest.mock("../../../utils/log/logger", () => ({
   log: jest.fn(),
