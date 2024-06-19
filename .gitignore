@@ -1,6 +1,16 @@
-coverage
+# Nodejs
 node_modules
 .env
-notes.txt
-keycloak.json
+
+# Logs
 logs.log
+
+# Keycloak
+keycloak.json
+
+# SQL Initial Data
+data.sql
+
+# Jest
+jest.config.ts
+coverage
